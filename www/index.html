@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!--
+    Customize this policy to fit your own app's needs. For more guidance, see:
+        https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+    Some notes:
+        * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+        * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+        * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+            * Enable inline JS: add 'unsafe-inline' to default-src
+    -->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">-->
+
+    <meta http-equiv="Content-Security-Policy" content="">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport"
+          content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link rel="stylesheet" type="text/css" href="css/leaflet.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/spinner.css">
+
+
+    <title>marine litter tracker</title>
+</head>
+<body>
+<!-- -------------------------------------  spinner -------------------------------------------- -->
+<div id="spinner" class="md-preloader">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="75" width="75" viewbox="0 0 75 75">
+        <circle cx="37.5" cy="37.5" r="33.5" stroke-width="2"/>
+    </svg>
+</div>
+
+<!-- -------------------------------------  alert -------------------------------------------- -->
+<div id="alert" onclick="closeAlert()"></div>
+
+<!-- -------------------------------------  curtain -------------------------------------------- -->
+<div id="curtain"></div>
+
+<!-- -------------------------------------  sidebar -------------------------------------------- -->
+<div id="mySidenav" class="sidenav">
+    <ul>
+        <li><a href="javascript:void(0)" class="" onclick="closeNav();" style="margin-bottom: 25px;"><img
+                src="css/svg/arrow-l.svg"></a></li>
+        <li><a href="javascript:void(0)" class="" onclick="showPage('tracksList'); closeNav();"><img
+                src="css/svg/route-2.svg"></a></li>
+        <li><a href="javascript:void(0)" class="" onclick="showPage('littersList'); closeNav();"><img
+                src="css/svg/list-1.svg"></a></li>
+        <li><a href="javascript:void(0)" class="" onclick="showPage('userDetail'); closeNav();"><img
+                src="css/svg/user-3.svg"></a></li>
+        <li><a href="javascript:void(0)" class="" onclick="showPage('uploadData'); closeNav();"><img
+                src="css/svg/cloud-b.svg"></a></li>
+        <li><a href="javascript:void(0)" class="" onclick="showPage('setting'); closeNav();"><img
+                src="css/svg/settings-5.svg"></a></li>
+        <li><a href="javascript:void(0)" class="" onclick="showPage('compassDetail'); closeNav();"><img
+                src="css/svg/compass.svg"></a></li>
+        <li><a href="javascript:void(0)" class="" onclick="showPage('gpsDetail'); closeNav();"><img
+                src="css/svg/satellite.svg"></a></li>
+        <li><a href="javascript:void(0)" class="" onclick="showPage('networkDetail'); closeNav();"><img
+                src="css/svg/wifi-1-b.svg"></a></li>
+        <li><a href="javascript:void(0)" class="" onclick="showPage('info'); closeNav();"><img
+                src="css/svg/info.svg"></a></li>
+        <li><a href="javascript:void(0)" class="" onclick="showPage('licence'); closeNav();"><img
+                src="css/svg/notebook-5.svg"></a></li>
+    </ul>
+</div>
+
+<!-- ------------------------------------- header ----------------------------------- -->
+
+<div class="header">
+    <a href="javascript:void(0)" onclick="openNav()" class="menuBar"><img src="css/svg/menu-5-w.svg"></a>
+    <h1>marine<b>litter</b>tracker</h1>
+</div>
+
+<!-- ------------------------------------- main pages 1 ----------------------------------- -->
+
+<div id="page1" style="" class="page" onload="closeNav();">
+    <div class="content" style="padding: auto; font-size: 30px;">
+        <img class="" src="css/svg/navigation-4-w.svg" style="width: 35%; position: fixed">
+        <img class="pageIcon" id="compass_arrow" src="css/svg/navigation-3-w.svg" style="width: 35%">
+        <p id="heading"></p>
+        <p id="geolocation"></p>
+        <p id="date"></p>
+        <fieldset><input id="trackSwitch" type="button" class="button" value="" onclick="startNewTrack()"></fieldset>
+        <!--<a href="javascript:void(0)" id="trackSwitch" class="button record"  onclick="startNewTrack()" ><img id="trackSwitch_id" src="css/svg/record-1.svg"></a>-->
+    </div>
+</div>
+
+<!-- ------------------------------------- main pages 2 ----------------------------------- -->
+
+<div id="page2" style="display:none" class="page" onload="closeNav();">
+    <div class="content" style="padding-top: 0px">
+        <table>
+            <tr>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('plastic bottle')" ;><img
+                        src="css/svg/litters-w/plastic_bottle.svg"></a></td>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('plastic leaf')" ;><img
+                        src="css/svg/litters-w/plastic_leaf.svg"></a></td>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('can')" ;><img
+                        src="css/svg/litters-w/can.svg"></a></td>
+            </tr>
+            <tr>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('glass')"><img
+                        src="css/svg/litters-w/glass.svg"></a></td>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('vegetable')"><img
+                        src="css/svg/litters-w/vegetable.svg"></a></td>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('fish')"><img
+                        src="css/svg/litters-w/fish.svg"></a></td>
+            </tr>
+            <tr>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('net')"><img
+                        src="css/svg/litters-w/net.svg"></a></td>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('boulter')"><img
+                        src="css/svg/litters-w/boulter.svg"></a></td>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('fender')"><img
+                        src="css/svg/litters-w/fender.svg"></a></td>
+            </tr>
+            <tr>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('wood')"><img
+                        src="css/svg/litters-w/wood.svg"></a></td>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('tree')"><img
+                        src="css/svg/litters-w/tree.svg"></a></td>
+                <td><a href="javascript:void(0)" class="" onclick="trackLitter('container')"><img
+                        src="css/svg/litters-w/container.svg"></a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- ------------------------------------- main pages 3 ----------------------------------- -->
+
+<div id="page3" style="display:none" class="page" onload="closeNav();">
+    <div class="content">
+        <div id="map"></div>
+        <div id="map_icon_no_network"></div>
+        <p id="map_message_no_network"></p>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 1 tracks ----------------------------------- -->
+
+<div id="tracksList" style="display:none" class="page" onload="closeNav();">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/route-2-w.svg">
+        <ul id="tracksListUl" class="detail"></ul>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 1.1 track detail ----------------------------------- -->
+
+<div id="trackDetail" style="display:none" class="page">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/route-2-w.svg">
+        <ul id="trackDetailUl" class="detail"></ul>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 2 litters ----------------------------------- -->
+
+<div id="littersList" style="display:none" class="page">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/list-1-w.svg">
+        <table id="littersListUl" class="detail"></table>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 2.1 litter detail ----------------------------------- -->
+
+<div id="litterDetail" style="display:none" class="page">
+    <div class="content">
+        <div id="littersDetailIcon"></div>
+        <ul id="littersDetailUl" class="detail"></ul>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 3 user ----------------------------------- -->
+
+<div id="userDetail" style="display:none" class="page">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/user-3-w.svg">
+        <div id="userData" class="detail"></div>
+    </div>
+</div>
+
+<div id="signUp" style="display:none" class="page">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/user-3-w.svg">
+        <form name="signUpForm" action="" onsubmit="" method="post" onkeypress=if(event.keyCode==13)signUp()>
+            <fieldset>
+                <label for="username">username</label>
+                <input type="text" id="username" placeholder="username" value="">
+                <label for="password">password</label>
+                <input type="password" id="password" placeholder="password" value="">
+                <label for="confirmPass">confirm password</label>
+                <input type="password" id="confirmPass" placeholder="confirm password" value="">
+                <label for="email">email</label>
+                <input type="email" id="email" placeholder="email" value="">
+                <input id="signUpSubmit" type="button" class="button" value="" onclick="signUp()">
+            </fieldset>
+        </form>
+
+        <a href="javascript:void(0)" class="" onclick="showPage('logIn');"><span id="signUpMessage"></span><img
+                src="css/svg/arrow-d-w.svg"></a>
+    </div>
+</div>
+
+<div id="logIn" style="display:none" class="page">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/user-3-w.svg">
+        <form name="logInForm" action="" onsubmit="" method="post" onkeypress=if(event.keyCode==13)logIn()>
+            <fieldset>
+                <label for="logInEmail">email</label>
+                <input type="email" id="logInEmail" placeholder="email" value="">
+                <label for="logInPassword">password</label>
+                <input type="password" id="logInPassword" placeholder="password" value="">
+                <input id="logInSubmit" type="button" class="button" value="" onclick="logIn()">
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 4 upload ----------------------------------- -->
+
+<div id="uploadData" style="display:none" class="page">
+    <div class="content">
+        <div id="uploadIcon"></div>
+        <p id="uploadNetworkMessage"></p>
+        <fieldset>
+            <input type="button" id="uploadButton" class="button" value="" onclick="uploadData()">
+        </fieldset>
+        <p id="uploadUserMessage"></p>
+        <p id="uploadUserWarning"></p>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 5 setting ----------------------------------- -->
+
+<div id="setting" style="display:none" class="page">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/settings-5-w.svg">
+        <table id="settingListUl" class="detail"></table>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 6 compass detail ----------------------------------- -->
+<div id="compassDetail" style="display:none" class="page">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/compass-w.svg">
+        <div id="compass_detail" class="detail"></div>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 7 gps detail ----------------------------------- -->
+<div id="gpsDetail" style="display:none" class="page">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/satellite-w.svg">
+        <div id="gps_detail" class="detail"></div>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 8 network detail ----------------------------------- -->
+<div id="networkDetail" style="display:none" class="page">
+    <div class="content">
+        <div id="network_icon"></div>
+        <div id="network_detail" class="detail"></div>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 9 info ----------------------------------- -->
+<div id="info" style="display:none" class="page">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/info-w.svg">
+        <div id="info_content" class="detail smallFont"></div>
+    </div>
+</div>
+
+<!-- ------------------------------------- menu 10 licence ----------------------------------- -->
+<div id="licence" style="display:none" class="page">
+    <div class="content">
+        <img class="pageIcon" src="css/svg/notebook-5-w.svg">
+        <div id="licence_content" class="detail smallFont licence"></div>
+    </div>
+</div>
+
+<!-- ------------------------------------- footer ----------------------------------- -->
+<div class="footer">
+    <div class="navBar">
+        <ul>
+            <li><a href="javascript:void(0)" class="" onclick="showPage('page1'); closeNav();"><img
+                    src="css/svg/navigation-2-w.svg"></a></li>
+            <li><a href="javascript:void(0)" class="" onclick="showPage('page2'); closeNav();"><img
+                    src="css/svg/flag-3.1-w.svg"></a></li>
+            <li style="float:right"><a href="javascript:void(0)" class="" onclick="showPage('page3'); closeNav();"><img
+                    src="css/svg/map-w.svg"></a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- ------------------------------------- end of html pages ----------------------------------- -->
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/leaflet-src.js"></script>
+<script type="text/javascript" src="js/lang.js"></script>
+<script type="text/javascript" src="js/db.js"></script>
+<script src="js/index.js"></script>
+<script type="text/javascript">
+    document.addEventListener('deviceready', onDeviceReady, false);
+    document.addEventListener('touchstart', handleTouchStart, false);
+    document.addEventListener('touchmove', handleTouchMove, false);
+</script>
+</body>
+</html>
